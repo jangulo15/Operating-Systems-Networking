@@ -8,9 +8,15 @@ class Program
     static int numberOfWorkers, averageArrivalTime, averageServiceTime, simulationDuration;
     static int numberOfCustomers = 10;
 
+    static Semaphore semaphore = new Semaphore(numberOfWorkers, numberOfWorkers);
+
     static void Service(object arg)
     {
-        
+        Thread.Sleep(averageArrivalTime);
+
+        semaphore.WaitOne();
+        semaphore.Release();
+
     }
 
     static void QueueCustomer(object? arg)
