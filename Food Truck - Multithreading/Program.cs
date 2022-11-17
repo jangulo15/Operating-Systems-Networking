@@ -1,25 +1,27 @@
 ﻿using System.Threading;
+using System.Runtime.CompilerServices;
 using System.Collections.Concurrent;
 
 class Program
 {   
     //Benefits of BlockingCollection??
     static BlockingCollection<Customer> customers = new BlockingCollection<Customer>();
-    static int numberOfWorkers, averageArrivalTime, averageServiceTime, simulationDuration;
+    static int numberOfWorkers = 3;
+    static int averageArrivalTime, averageServiceTime, simulationDuration;
     static int numberOfCustomers = 10;
 
-    static Semaphore semaphore = new Semaphore(numberOfWorkers, numberOfWorkers);
+    static Semaphore workerSemaphore = new Semaphore(numberOfWorkers, numberOfWorkers);
 
-    static void Service(object arg)
+    static void Service(object? arg)
     {
         Thread.Sleep(averageArrivalTime);
 
-        semaphore.WaitOne();
-        semaphore.Release();
+        // workerSemaphore.WaitOne();
+        // workerSemaphore.Release();
 
     }
 
-    static void QueueCustomer(object? arg)
+    static void QueueCustomers(object? arg)
     {
         for(var i = 0; i < numberOfCustomers; i++)
         {
@@ -30,24 +32,24 @@ class Program
 
     public static void Main(string[] args)
     {
-        Console.WriteLine("How many workers will we have? ");
-        numberOfWorkers = Convert.ToInt32(Console.ReadLine());
+        // Console.WriteLine("How many workers will we have? ");
+        // numberOfWorkers = Convert.ToInt32(Console.ReadLine()) * 1000;
 
-        Console.WriteLine("What is the average arrival time? ");
-        averageArrivalTime = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine("What is the average arrival time in seconds? ");
+        averageArrivalTime = Convert.ToInt32(Console.ReadLine()) * 1000;
 
-        Console.WriteLine("What is the average service time? ");
-        averageServiceTime = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine("What is the average service time in seconds? ");
+        averageServiceTime = Convert.ToInt32(Console.ReadLine()) * 1000;
 
-        Console.WriteLine("How long will this simulation run? ");
-        simulationDuration = Convert.ToInt32(Console.ReadLine());
+        Console.WriteLine("How long will this simulation run in seconds? ");
+        simulationDuration = Convert.ToInt32(Console.ReadLine()) * 1000;
 
 
 
 
 
         //What does this do exactly?
-        var queueThread = new Thread(new ParameterizedThreadStart(QueueCustomer));
+        var queueThread = new Thread(new ParameterizedThreadStart(QueueCustomers));
         queueThread.Start();
 
         //What are TryTake/out var??
